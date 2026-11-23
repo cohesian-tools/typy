@@ -60,16 +60,30 @@ jobs:
 
             Install: go get github.com/cohesian-tools/typy@v0.2.0
         run: |
-          gh release create v0.2.0 \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
-            --title "typy v0.2.0" \
-            --notes "$RELEASE_NOTES"
+          # A retry must preserve an already published tag and release.
+          if gh release view v0.2.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Using existing v0.2.0 release"
+          else
+            gh release create v0.2.0 \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$GITHUB_SHA" \
+              --title "typy v0.2.0" \
+              --notes "$RELEASE_NOTES"
+          fi
       - name: Index and verify published module
         env:
           GOPROXY: https://proxy.golang.org
         run: |
-          go list -m github.com/cohesian-tools/typy@v0.2.0
+          # New tags may take a short time to propagate to the module proxy.
+          for attempt in 1 2 3 4 5; do
+            if go list -m github.com/cohesian-tools/typy@v0.2.0; then
+              break
+            fi
+            if [ "$attempt" -eq 5 ]; then
+              exit 1
+            fi
+            sleep 15
+          done
           consumer_dir=$(mktemp -d)
           cd "$consumer_dir"
           go mod init typy-release-check
