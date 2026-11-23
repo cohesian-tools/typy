@@ -72,7 +72,7 @@ jobs:
           fi
       - name: Index and verify published module
         env:
-          GOPROXY: https://proxy.golang.org
+          GOPROXY: https://proxy.golang.org,direct
         run: |
           # New tags may take a short time to propagate to the module proxy.
           for attempt in 1 2 3 4 5; do
