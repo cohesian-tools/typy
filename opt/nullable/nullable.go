@@ -2,6 +2,7 @@ package nullable
 
 // Null is a generic type that represents a nullable value.
 // There are 2 possible states:
+//
 //   - Null:
 //     > value: zero value of T
 //     > valid: false
