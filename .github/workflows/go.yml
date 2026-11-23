@@ -32,11 +32,11 @@ jobs:
       - name: Vet
         run: go vet ./...
 
-  first-release:
-    name: Publish v0.1.0
+  release:
+    name: Publish v0.2.0
     needs: test
-    # Bootstrap only: later commits run checks without publishing a release.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Release typy v0.1.0'
+    # Publish this version only for its explicit release commit.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.head_commit.message == 'Release typy v0.2.0'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -49,34 +49,34 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_NOTES: |
-            First release of the typy Go toolbox.
+            Breaking change: rename ptr.NewPtr(value) to ptr.New(value).
 
-            - ptr: generic pointer construction.
-            - errlay: layered errors with standard error-chain matching.
-            - opt: optional values with JSON/BSON codecs, plus opt/nullable.
-            - Per-tool documentation and executable examples.
+            - Remove the NewPtr name; update callers to ptr.New.
+            - Preserve pointer copy semantics and nil-value behavior.
+            - Update tests, examples, and per-tool documentation.
+            - errlay and opt APIs are unchanged.
 
             Requires Go 1.25 or newer.
 
-            Install: go get github.com/cohesian-tools/typy@v0.1.0
+            Install: go get github.com/cohesian-tools/typy@v0.2.0
         run: |
-          gh release create v0.1.0 \
+          gh release create v0.2.0 \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
-            --title "typy v0.1.0" \
+            --title "typy v0.2.0" \
             --notes "$RELEASE_NOTES"
       - name: Index and verify published module
         env:
           GOPROXY: https://proxy.golang.org
         run: |
-          go list -m github.com/cohesian-tools/typy@v0.1.0
+          go list -m github.com/cohesian-tools/typy@v0.2.0
           consumer_dir=$(mktemp -d)
           cd "$consumer_dir"
           go mod init typy-release-check
-          go get github.com/cohesian-tools/typy/ptr@v0.1.0 \
-            github.com/cohesian-tools/typy/errlay@v0.1.0 \
-            github.com/cohesian-tools/typy/opt@v0.1.0 \
-            github.com/cohesian-tools/typy/opt/nullable@v0.1.0
+          go get github.com/cohesian-tools/typy/ptr@v0.2.0 \
+            github.com/cohesian-tools/typy/errlay@v0.2.0 \
+            github.com/cohesian-tools/typy/opt@v0.2.0 \
+            github.com/cohesian-tools/typy/opt/nullable@v0.2.0
           go build github.com/cohesian-tools/typy/ptr \
             github.com/cohesian-tools/typy/errlay \
             github.com/cohesian-tools/typy/opt \

@@ -9,16 +9,16 @@ import "github.com/cohesian-tools/typy/ptr"
 ## API
 
 ```go
-func NewPtr[T any](t T) *T
+func New[T any](t T) *T
 ```
 
-`NewPtr` returns a non-nil pointer initialized with a copy of its argument.
+`New` returns a non-nil pointer initialized with a copy of its argument.
 Type inference usually determines `T`:
 
 ```go
-name := ptr.NewPtr("Lucas") // *string
-count := ptr.NewPtr(0)      // *int, pointing to zero
-enabled := ptr.NewPtr(true) // *bool
+name := ptr.New("Lucas") // *string
+count := ptr.New(0)      // *int, pointing to zero
+enabled := ptr.New(true) // *bool
 ```
 
 Named types are preserved. For example, passing a `UserID` returns a `*UserID`,
@@ -31,7 +31,7 @@ does not change the input or another call's result:
 
 ```go
 original := 42
-copy := ptr.NewPtr(original)
+copy := ptr.New(original)
 *copy = 7
 // original is still 42.
 ```
@@ -48,8 +48,8 @@ pointers to distinct zero-sized variables to compare equal.
 Specify a type when the argument is untyped `nil`:
 
 ```go
-p := ptr.NewPtr[*int](nil) // **int: p != nil, *p == nil
-s := ptr.NewPtr[[]int](nil)
+p := ptr.New[*int](nil) // **int: p != nil, *p == nil
+s := ptr.New[[]int](nil)
 // s != nil, *s == nil
 ```
 
@@ -59,8 +59,8 @@ The returned pointer exists even when the value stored through it is nil.
 
 ```go
 target := errlay.Target(
-    ptr.NewPtr("database"),
-    ptr.NewPtr(uint8(10)),
+    ptr.New("database"),
+    ptr.New(uint8(10)),
 )
 ```
 

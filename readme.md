@@ -17,7 +17,7 @@ Requires **Go 1.25 or newer**.
 ## Installation
 
 ```sh
-go get github.com/cohesian-tools/typy@v0.1.0
+go get github.com/cohesian-tools/typy@v0.2.0
 ```
 
 ## Usage
@@ -36,7 +36,7 @@ For example, pointer construction also makes error filters convenient:
 
 ```go
 err := errlay.New("database", 10, "query failed", nil)
-target := errlay.Target(ptr.NewPtr("database"), ptr.NewPtr(uint8(10)))
+target := errlay.Target(ptr.New("database"), ptr.New(uint8(10)))
 matched := errors.Is(err, target) // true; import "errors"
 
 name := opt.Some("Lucas")
@@ -68,6 +68,10 @@ rather than the module root.
 
 ## Migrating existing imports
 
+When upgrading from v0.1.0 to v0.2.0, replace `ptr.NewPtr(...)` with
+`ptr.New(...)`. This is a breaking rename: `NewPtr` has been removed, and the
+function's copy and nil-value behavior is unchanged.
+
 | Previous import | Toolbox import | Package name |
 | --- | --- | --- |
 | `github.com/cohesian-tools/typy` (`NewPtr`) | `github.com/cohesian-tools/typy/ptr` | `ptr` |
@@ -75,7 +79,7 @@ rather than the module root.
 | `github.com/cohesian-tools/optional` | `github.com/cohesian-tools/typy/opt` | `opt` |
 | `github.com/cohesian-tools/optional/nullable` | `github.com/cohesian-tools/typy/opt/nullable` | `nullable` |
 
-Change `typy.NewPtr(...)` to `ptr.NewPtr(...)` and `optional.Some(...)` to
+Change `typy.NewPtr(...)` to `ptr.New(...)` and `optional.Some(...)` to
 `opt.Some(...)`, and likewise for other optional identifiers. An import alias
 such as `optional "github.com/cohesian-tools/typy/opt"` can keep existing call
 sites intact while migrating. Run `go mod tidy` in each consumer afterward.

@@ -67,7 +67,7 @@ the filter. Keep filter values unchanged while matching; concurrent mutation
 requires synchronization. The `ptr` package is convenient for fixed filters:
 
 ```go
-target := errlay.Target(ptr.NewPtr("database"), ptr.NewPtr(uint8(10)))
+target := errlay.Target(ptr.New("database"), ptr.New(uint8(10)))
 ```
 
 ## Error-chain behavior

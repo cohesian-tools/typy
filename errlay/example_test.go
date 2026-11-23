@@ -22,7 +22,7 @@ func ExampleTarget() {
 	err := errlay.New("service", 1, "request failed",
 		errlay.New("database", 10, "query failed", nil),
 	)
-	target := errlay.Target(ptr.NewPtr("database"), ptr.NewPtr(uint8(10)))
+	target := errlay.Target(ptr.New("database"), ptr.New(uint8(10)))
 	fmt.Println(errors.Is(err, target))
 	fmt.Println(errors.Is(err, errlay.Target(nil, nil)))
 	fmt.Println(errors.Is(errors.New("ordinary error"), errlay.Target(nil, nil)))

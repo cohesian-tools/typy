@@ -6,9 +6,9 @@ import (
 	"github.com/cohesian-tools/typy/ptr"
 )
 
-func ExampleNewPtr() {
+func ExampleNew() {
 	original := 42
-	value := ptr.NewPtr(original)
+	value := ptr.New(original)
 	*value = 7
 	fmt.Println(original, *value)
 	// Output: 42 7
